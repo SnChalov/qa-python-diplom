@@ -1,0 +1,10 @@
+@'
+
+# Python
+__pycache__/
+*.py[cod]
+.coverage
+htmlcov/
+.pytest_cache/
+.venv/
+'@ | Add-Content .gitignore
