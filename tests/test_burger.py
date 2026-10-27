@@ -63,17 +63,27 @@ def test_move_ingredient_changes_order(burger):
     assert burger.ingredients == [second, third, first]
 
 
-def test_get_price_returns_double_bun_price(burger, bun):
+
+@pytest.mark.parametrize(
+    "bun_price, ingredient_prices, expected_price",
+    [
+        (100, [], 200),
+        (100, [50], 250),
+        (80, [30, 20], 210),
+    ],
+)
+def test_get_price_returns_correct_price(
+    burger, bun, bun_price, ingredient_prices, expected_price):
+    bun.get_price.return_value = bun_price
     burger.set_buns(bun)
 
-    assert burger.get_price() == 200
+    for price in ingredient_prices:
+        ingredient = Mock()
+        ingredient.get_price.return_value = price
+        burger.add_ingredient(ingredient)
 
+    assert burger.get_price() == expected_price
 
-def test_get_price_includes_ingredient_prices(burger, bun, ingredient):
-    burger.set_buns(bun)
-    burger.add_ingredient(ingredient)
-
-    assert burger.get_price() == 250
 
 
 def test_get_receipt_returns_formatted_receipt(burger, bun, ingredient):
